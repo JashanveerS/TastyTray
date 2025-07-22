@@ -1,0 +1,92 @@
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  preferences: string[];
+  allergies: string[];
+  goals: Goals;
+  favoriteCuisines: string[];
+}
+
+export interface Goals {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface Recipe {
+  id: string;
+  name: string;
+  image: string;
+  servings: number;
+  cookTime: number;
+  description: string;
+  steps: Step[];
+  ingredients: Item[];
+  nutrition: Nutrition;
+  cuisines: string[];
+  tags: string[];
+  difficulty: string;
+  rating?: number;
+  source: string;
+}
+
+export interface Step {
+  num: number;
+  instruction: string;
+}
+
+export interface Item {
+  id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  image?: string;
+}
+
+export interface Nutrition {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sugar: number;
+  sodium: number;
+}
+
+export interface MealPlan {
+  id: string;
+  userId: string;
+  startDate: string;
+  endDate: string;
+  meals: PlannedMeal[];
+  totalNutrition: Nutrition;
+}
+
+export interface PlannedMeal {
+  id: string;
+  date: string;
+  type: string;
+  recipe: Recipe;
+  servings: number;
+}
+
+export interface SearchOptions {
+  query?: string;
+  cuisine?: string[];
+  diet?: string[];
+  allergies?: string[];
+  maxTime?: number;
+  ingredients?: string[];
+  excludeIngredients?: string[];
+}
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  image?: string;
+  expiry?: string;
+  amount?: number;
+  unit?: string;
+}
