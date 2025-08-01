@@ -90,3 +90,55 @@ export interface Ingredient {
   amount?: number;
   unit?: string;
 }
+
+// Supabase Database Types
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  avatar_url?: string;
+  created_at: string;
+}
+
+export interface Favorite {
+  id: string;
+  user_id: string;
+  recipe_id: string;
+  recipe_title: string;
+  recipe_image?: string;
+  created_at: string;
+}
+
+export interface PantryItem {
+  id: string;
+  user_id: string;
+  ingredient_name: string;
+  quantity?: number;
+  unit?: string;
+  expiry_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShoppingListItem {
+  id: string;
+  user_id: string;
+  ingredient_name: string;
+  quantity?: number;
+  unit?: string;
+  is_completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MealPlanItem {
+  id: string;
+  user_id: string;
+  date: string;
+  meal_type: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+  recipe_id: string;
+  recipe_title: string;
+  recipe_image?: string;
+  servings: number;
+  created_at: string;
+}
