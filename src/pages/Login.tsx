@@ -29,29 +29,29 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex-center p-4">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <ChefHat className="text-orange-600" size={40} />
-            <h1 className="text-3xl font-bold text-gray-900">TastyTray</h1>
+          <div className="space-items justify-center mb-4">
+            <ChefHat className="text-accent" size={40} />
+            <h1 className="heading-1">TastyTray</h1>
           </div>
-          <p className="text-gray-600">Welcome back! Sign in to your account</p>
+          <p className="subtitle">Welcome back! Sign in to your account</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <div className="bg-red-50 border border-red-200 text-danger px-4 py-3 rounded-lg">
                 {error}
               </div>
             )}
 
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="form-group">
+              <label htmlFor="email" className="form-label">
                 Email Address
               </label>
               <div className="relative">
@@ -69,8 +69,8 @@ export default function Login() {
             </div>
 
             {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">
                 Password
               </label>
               <div className="relative">
@@ -98,7 +98,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn btn-primary py-3 text-lg"
+              className={`w-full btn-primary py-3 text-lg ${loading ? 'btn-loading' : ''}`}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -106,11 +106,11 @@ export default function Login() {
 
           {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="subtitle">
               Don't have an account?{' '}
               <Link
                 to="/signup"
-                className="text-orange-600 hover:text-orange-700 font-medium"
+                className="text-accent hover:text-orange-700 font-medium"
               >
                 Sign up
               </Link>

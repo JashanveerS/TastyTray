@@ -59,30 +59,30 @@ export default function RecipeCard({ recipe, onClick, onAddToMealPlan }: Props) 
   };
   return (
     <div 
-      className="card hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      className="card-hover"
       onClick={onClick}
     >
-      <div className="relative h-48 overflow-hidden rounded-t-lg">
+      <div className="card-image">
         <img
           src={recipe.image}
           alt={recipe.name}
-          className="w-full h-full object-cover"
+          className="card-image-full"
         />
-        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded text-sm">
+        <div className="difficulty-badge">
           {recipe.difficulty}
         </div>
-        <div className="absolute top-2 left-2 flex space-x-2">
-          <button onClick={handleFavoriteToggle} disabled={favoriteLoading} className={`p-2 rounded-full transition-colors ${ isFavorite 
-                ? 'bg-red-500 text-white' 
-                : 'bg-white bg-opacity-80 text-gray-600 hover:bg-opacity-100'} 
-                ${favoriteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                  
-            <Heart size={16} className={isFavorite ? 'fill-current' : ''} />
+        <div className="overlay-badge">
+          <button 
+            onClick={handleFavoriteToggle} 
+            disabled={favoriteLoading} 
+            className={`btn-icon ${isFavorite ? 'bg-red-500 text-white' : 'btn-icon-ghost'} ${favoriteLoading ? 'btn-disabled' : ''}`}
+          >
+            <Heart size={16} className={isFavorite ? 'heart-filled' : ''} />
           </button>
           {onAddToMealPlan && (
             <button
               onClick={handleMealPlanClick}
-              className="p-2 rounded-full bg-white bg-opacity-80 text-gray-600 hover:bg-opacity-100 transition-colors"
+              className="btn-icon-ghost"
             >
               <Calendar size={16} />
             </button>
@@ -90,46 +90,43 @@ export default function RecipeCard({ recipe, onClick, onAddToMealPlan }: Props) 
         </div>
       </div>
       
-      <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{recipe.name}</h3>
+      <div className="card-content">
+        <h3 className="title mb-2 line-clamp-2">{recipe.name}</h3>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="subtitle text-small mb-3 line-clamp-2">
           {recipe.description}
         </p>
         
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-          <div className="flex items-center gap-1">
+        <div className="recipe-stats">
+          <div className="recipe-stat">
             <Clock size={16} />
             <span>{recipe.cookTime}min</span>
           </div>
           
-          <div className="flex items-center gap-1">
+          <div className="recipe-stat">
             <Users size={16} />
             <span>{recipe.servings}</span>
           </div>
           
           {recipe.rating && (
-            <div className="flex items-center gap-1">
-              <Star size={16} className="text-yellow-400 fill-current" />
+            <div className="recipe-stat">
+              <Star size={16} className="icon-star-filled" />
               <span>{recipe.rating.toFixed(1)}</span>
             </div>
           )}
         </div>
         
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="recipe-tags">
           {recipe.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs"
-            >
+            <span key={tag} className="badge-default">
               {tag}
             </span>
           ))}
         </div>
         
-        <div className="text-sm text-gray-500">
-          <span className="font-medium text-orange-600">{recipe.nutrition.calories}</span> cal
-          <span className="mx-2">•</span>
+        <div className="recipe-nutrition">
+          <span className="nutrition-highlight">{recipe.nutrition.calories}</span> cal
+          <span className="divider">•</span>
           <span>{recipe.nutrition.protein}g protein</span>
         </div>
       </div>

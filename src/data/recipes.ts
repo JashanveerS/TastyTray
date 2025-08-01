@@ -30,7 +30,7 @@ export const fetchRandomRecipes = async (count = 12, offset = 0): Promise<Recipe
           return recipes.slice(0, count);
         }
       } catch (error) {
-        console.log('Spoonacular error:', error);
+        // Spoonacular failed, fallback to MealDB
       }
     }
     
@@ -52,7 +52,7 @@ export const fetchRandomRecipes = async (count = 12, offset = 0): Promise<Recipe
         }
       }
     } catch (error) {
-      console.log('MealDB error:', error);
+      // MealDB failed
     }
     
     return recipes.slice(0, count);
@@ -80,7 +80,7 @@ export const searchRecipes = async (options: SearchOptions, offset = 0): Promise
         }
       }
     } catch (error) {
-      console.log('MealDB search error:', error);
+      // MealDB search failed
     }
   }
   
@@ -113,12 +113,12 @@ export const searchRecipes = async (options: SearchOptions, offset = 0): Promise
             });
             recipes.push(transformSpoonRecipe(detailResponse.data));
           } catch (error) {
-            console.log(`Error getting recipe ${result.id}:`, error);
+            // Skip recipe if details fetch fails
           }
         }
       }
     } catch (error) {
-      console.log('Spoonacular search error:', error);
+      // Spoonacular search failed
     }
   }
   

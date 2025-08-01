@@ -15,7 +15,6 @@ export const favoritesService = {
   },
 
   async addFavorite(userId: string, recipeId: string, recipeTitle: string, recipeImage?: string): Promise<Favorite> {
-    console.log('Adding favorite:', { userId, recipeId, recipeTitle, recipeImage });
     
     const { data, error } = await supabase
       .from('favorites')
@@ -29,15 +28,12 @@ export const favoritesService = {
       .single();
     
     if (error) {
-      console.error('Supabase addFavorite error:', error);
       throw error;
     }
-    console.log('Successfully added favorite:', data);
     return data;
   },
 
   async removeFavorite(userId: string, recipeId: string): Promise<void> {
-    console.log('Removing favorite:', { userId, recipeId });
     
     const { error } = await supabase
       .from('favorites')
@@ -46,10 +42,8 @@ export const favoritesService = {
       .eq('recipe_id', recipeId);
     
     if (error) {
-      console.error('Supabase removeFavorite error:', error);
       throw error;
     }
-    console.log('Successfully removed favorite');
   },
 
   async isFavorite(userId: string, recipeId: string): Promise<boolean> {
@@ -91,7 +85,6 @@ export const mealPlanService = {
     servings: number,
     recipeImage?: string
   ): Promise<MealPlanItem> {
-    console.log('Adding meal plan:', { userId, date, mealType, recipeId, recipeTitle, servings, recipeImage });
     
     // First, remove any existing meal for this date and meal type
     const { error: deleteError } = await supabase
@@ -101,9 +94,7 @@ export const mealPlanService = {
       .eq('date', date)
       .eq('meal_type', mealType);
       
-    if (deleteError) {
-      console.error('Error deleting existing meal plan:', deleteError);
-    }
+    // Ignore delete errors - may not exist
     
     // Insert new meal plan
     const { data, error } = await supabase
@@ -121,10 +112,8 @@ export const mealPlanService = {
       .single();
     
     if (error) {
-      console.error('Supabase addMealPlan error:', error);
       throw error;
     }
-    console.log('Successfully added meal plan:', data);
     return data;
   },
 
@@ -290,7 +279,6 @@ export const shoppingListService = {
     // 4. Add missing ingredients to shopping list
     
     // For now, this is a placeholder that could be expanded with recipe API integration
-    console.log('Generating shopping list from meal plans:', mealPlans);
   },
 
   async clearCompleted(userId: string): Promise<void> {

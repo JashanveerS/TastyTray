@@ -4,7 +4,6 @@ import SearchBar from '../parts/SearchBar';
 import RecipeCard from '../parts/RecipeCard';
 import { Navigation } from '../parts/Navigation';
 import { MealPlanModal } from '../parts/MealPlanModal';
-import { TestSupabase } from '../debug/TestSupabase';
 import { Favorites } from './Favorites';
 import { MealPlan } from './MealPlan';
 import { Pantry } from './Pantry';
@@ -122,12 +121,16 @@ export default function Home() {
         servings: 2,
         difficulty: 'medium',
         tags: [],
+        cuisines: [],
+        source: 'manual',
         nutrition: {
           calories: 0,
           protein: 0,
           carbs: 0,
           fat: 0,
-          fiber: 0
+          fiber: 0,
+          sugar: 0,
+          sodium: 0
         }
       };
       setRecipeToAddToMealPlan(basicRecipe);
@@ -151,8 +154,6 @@ export default function Home() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'debug':
-        return <TestSupabase />;
       case 'favorites':
         return <Favorites onAddToMealPlan={handleAddToMealPlan} />;
       case 'meal-plan':
@@ -175,10 +176,10 @@ export default function Home() {
         </div>
 
         {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-900">
+        <div className="flex-between mb-6">
+          <h3 className="heading-3">
             {hasSearched ? 'Search Results' : 'Popular Recipes'}
-            <span className="ml-2 text-sm font-normal text-gray-500">
+            <span className="ml-2 text-small font-normal text-muted">
               ({recipes.length} recipes)
             </span>
           </h3>
@@ -186,7 +187,7 @@ export default function Home() {
           {hasSearched && (
             <button
               onClick={loadRandomRecipes}
-              className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              className="btn-primary"
             >
               View Popular Recipes
             </button>
@@ -195,9 +196,9 @@ export default function Home() {
 
         {/* Loading State */}
         {(loading || searching) && (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="animate-spin text-orange-600 mr-2" size={32} />
-            <span className="text-gray-600">
+          <div className="loading-container">
+            <Loader2 className="loading-spinner" size={32} />
+            <span className="subtitle">
               {searching ? 'Searching recipes...' : 'Loading recipes...'}
             </span>
           </div>
@@ -205,17 +206,17 @@ export default function Home() {
 
         {/* No Results */}
         {!loading && !searching && recipes.length === 0 && hasSearched && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <ChefHat size={48} className="mx-auto" />
+          <div className="empty-state">
+            <div className="empty-icon">
+              <ChefHat size={48} />
             </div>
-            <h4 className="text-lg font-medium text-gray-900 mb-2">
+            <h4 className="empty-title">
               No recipes found
             </h4>
-            <p className="text-gray-600 mb-4">
+            <p className="empty-description">
               Try adjusting your search criteria or browse our popular recipes.
             </p>
-            <button onClick={loadRandomRecipes} className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
+            <button onClick={loadRandomRecipes} className="btn-primary">
               Browse Popular Recipes
             </button>
           </div>
@@ -224,7 +225,7 @@ export default function Home() {
         {/* Recipe Grid */}
         {!loading && !searching && recipes.length > 0 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid-responsive">
               {recipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -237,11 +238,11 @@ export default function Home() {
             
             {/* Load More Button */}
             {canLoadMore && (
-              <div className="flex justify-center mt-8">
+              <div className="flex-center mt-8">
                 <button
                   onClick={loadMoreRecipes}
                   disabled={loadingMore}
-                  className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                  className={`btn-primary px-6 py-3 space-items ${loadingMore ? 'btn-disabled' : ''}`}
                 >
                   {loadingMore ? (
                     <>
@@ -261,20 +262,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page-container">
       <Navigation
         activeSection={activeSection}
         onSectionChange={setActiveSection}
       />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="main-content">
         {activeSection === 'recipes' && (
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="section-header">
+            <h2 className="heading-1 mb-2">
               Welcome back, {profile?.name?.split(' ')[0] || 'Chef'}!
             </h2>
-            <p className="text-gray-600">
+            <p className="subtitle">
               Discover delicious recipes tailored to your taste
             </p>
           </div>
@@ -285,23 +286,23 @@ export default function Home() {
 
       {/* Recipe Modal */}
       {selectedRecipe && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="flex-between">
+                <h2 className="modal-title">
                   {selectedRecipe.name}
                 </h2>
                 <button
                   onClick={closeRecipeModal}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="modal-close"
                 >
                   ×
                 </button>
               </div>
             </div>
             
-            <div className="p-6">
+            <div className="modal-body">
               <img
                 src={selectedRecipe.image}
                 alt={selectedRecipe.name}
@@ -309,16 +310,16 @@ export default function Home() {
               />
               
               <div className="mb-6">
-                <h3 className="font-semibold text-lg mb-2">Description</h3>
-                <p className="text-gray-600">{selectedRecipe.description}</p>
+                <h3 className="title mb-2">Description</h3>
+                <p className="subtitle">{selectedRecipe.description}</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
+                  <h3 className="title mb-2">Ingredients</h3>
                   <ul className="space-y-2">
                     {selectedRecipe.ingredients.map((ingredient) => (
-                      <li key={ingredient.id} className="text-gray-600">
+                      <li key={ingredient.id} className="subtitle">
                         {ingredient.amount} {ingredient.unit} {ingredient.name}
                       </li>
                     ))}
@@ -326,21 +327,21 @@ export default function Home() {
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">Nutrition</h3>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
+                  <h3 className="title mb-2">Nutrition</h3>
+                  <div className="space-y-1 text-small">
+                    <div className="flex-between">
                       <span>Calories:</span>
                       <span>{selectedRecipe.nutrition.calories}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex-between">
                       <span>Protein:</span>
                       <span>{selectedRecipe.nutrition.protein}g</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex-between">
                       <span>Carbs:</span>
                       <span>{selectedRecipe.nutrition.carbs}g</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex-between">
                       <span>Fat:</span>
                       <span>{selectedRecipe.nutrition.fat}g</span>
                     </div>
@@ -350,11 +351,11 @@ export default function Home() {
               
               {selectedRecipe.steps.length > 0 && (
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">Instructions</h3>
+                  <h3 className="title mb-2">Instructions</h3>
                   <ol className="space-y-3">
                     {selectedRecipe.steps.map((step) => (
                       <li key={step.num} className="flex gap-3">
-                        <span className="bg-orange-100 text-orange-800 text-sm font-medium px-2 py-1 rounded-full min-w-[24px] text-center">
+                        <span className="badge-primary text-small font-medium min-w-[24px] text-center">
                           {step.num}
                         </span>
                         <span className="text-gray-700 flex-1">{step.instruction}</span>
