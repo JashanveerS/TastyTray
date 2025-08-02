@@ -4,7 +4,7 @@ A comprehensive meal planning app that helps you discover, organize, and plan yo
 
 ## 🌟 Live Demo
 
-**[View Live App](https://your-app-name.vercel.app)** ← *Replace with your Vercel URL*
+**[View Live App](https://tasty-tray.vercel.app)** ← *Replace with your Vercel URL*
 
 ## ✨ Features
 
