@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Home, 
   Heart, 
@@ -10,6 +10,7 @@ import {
   ChefHat
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { ProfileCard } from './ProfileCard';
 
 interface NavigationProps {
   activeSection: string;
@@ -21,6 +22,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   onSectionChange 
 }) => {
   const { signOut, user, profile } = useAuth();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -73,10 +75,15 @@ export const Navigation: React.FC<NavigationProps> = ({
 
           {/* User Menu */}
           <div className="space-items space-x-4">
-            <div className="space-items text-small text-muted">
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="space-items text-small text-muted hover:text-gray-600 hover:bg-gray-50 px-2 py-1 rounded-md transition-colors"
+            >
               <User size={16} />
-              <span>{profile?.name || user?.email}</span>
-            </div>
+              <span>{profile?.name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'}</span>
+            </button>
+
+            <ProfileCard isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
             <button
               onClick={handleSignOut}
               className="space-items nav-item text-muted hover:text-danger hover:bg-gray-50"
