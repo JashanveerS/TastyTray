@@ -180,7 +180,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ isOpen, onClose }) => 
       />
       
       {/* Profile Card */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-6 w-full max-w-md z-50 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-2 sm:top-1/2 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 bg-white rounded-xl shadow-xl p-4 sm:p-6 w-auto sm:w-full sm:max-w-md z-50 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="heading-2">Profile Settings</h2>

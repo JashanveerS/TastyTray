@@ -28,7 +28,7 @@ export default function SearchBar({ onSearch, isLoading }: Props) {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="relative">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
@@ -36,25 +36,27 @@ export default function SearchBar({ onSearch, isLoading }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for recipes..."
-              className="input pl-10 pr-4"
+              className="input pl-10 pr-4 w-full"
             />
           </div>
           
-          <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className={`btn btn-outline px-3 ${showFilters ? 'bg-gray-100' : ''}`}
-          >
-            <Filter size={20} />
-          </button>
-          
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn btn-primary px-6"
-          >
-            {isLoading ? 'Searching...' : 'Search'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setShowFilters(!showFilters)}
+              className={`btn btn-outline px-3 flex-1 sm:flex-none flex items-center justify-center ${showFilters ? 'bg-gray-100' : ''}`}>
+              <Filter size={18} className="mr-2" />
+              <span>Filters</span>
+            </button>
+            
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary px-4 sm:px-6 flex-1 sm:flex-none"
+            >
+              {isLoading ? 'Searching...' : 'Search'}
+            </button>
+          </div>
         </div>
       </form>
 

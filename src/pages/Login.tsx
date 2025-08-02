@@ -29,19 +29,19 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex-center p-3 sm:p-4">
       <div className="max-w-md w-full">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="space-items justify-center mb-4">
-            <ChefHat className="text-accent" size={40} />
+            <ChefHat className="text-accent" size={36} />
             <h1 className="heading-1">TastyTray</h1>
           </div>
           <p className="subtitle">Welcome back! Sign in to your account</p>
         </div>
 
         {/* Login Form */}
-        <div className="card p-8">
+        <div className="card p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-danger px-4 py-3 rounded-lg">

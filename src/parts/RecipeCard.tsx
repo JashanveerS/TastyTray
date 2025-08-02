@@ -75,16 +75,18 @@ export default function RecipeCard({ recipe, onClick, onAddToMealPlan }: Props) 
           <button 
             onClick={handleFavoriteToggle} 
             disabled={favoriteLoading} 
-            className={`btn-icon ${isFavorite ? 'bg-red-500 text-white' : 'btn-icon-ghost'} ${favoriteLoading ? 'btn-disabled' : ''}`}
+            className={`btn-icon p-2 sm:p-2 ${isFavorite ? 'bg-red-500 text-white' : 'btn-icon-ghost'} ${favoriteLoading ? 'btn-disabled' : ''}`}
           >
-            <Heart size={16} className={isFavorite ? 'heart-filled' : ''} />
+            <Heart size={18} className={isFavorite ? 'heart-filled' : ''} />
           </button>
           {onAddToMealPlan && (
             <button
               onClick={handleMealPlanClick}
-              className="btn-icon-ghost"
+              className="btn-icon-ghost p-2 sm:p-2"
             >
-              <Calendar size={16} />
+              <div className="flex-center">
+                <Calendar size={18} />
+              </div>
             </button>
           )}
         </div>

@@ -176,10 +176,10 @@ export default function Home() {
         </div>
 
         {/* Results Header */}
-        <div className="flex-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
           <h3 className="heading-3">
             {hasSearched ? 'Search Results' : 'Popular Recipes'}
-            <span className="ml-2 text-small font-normal text-muted">
+            <span className="block sm:inline ml-0 sm:ml-2 text-small font-normal text-muted">
               ({recipes.length} recipes)
             </span>
           </h3>
@@ -187,7 +187,7 @@ export default function Home() {
           {hasSearched && (
             <button
               onClick={loadRandomRecipes}
-              className="btn-primary"
+              className="btn-primary w-full sm:w-auto"
             >
               View Popular Recipes
             </button>
@@ -287,7 +287,7 @@ export default function Home() {
       {/* Recipe Modal */}
       {selectedRecipe && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content-mobile sm:modal-content">
             <div className="modal-header">
               <div className="flex-between">
                 <h2 className="modal-title">
@@ -302,19 +302,19 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="modal-body">
+            <div className="modal-body p-3 sm:p-6">
               <img
                 src={selectedRecipe.image}
                 alt={selectedRecipe.name}
-                className="w-full h-64 object-cover rounded-lg mb-6"
+                className="w-full h-48 sm:h-64 object-cover rounded-lg mb-4 sm:mb-6"
               />
               
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <h3 className="title mb-2">Description</h3>
                 <p className="subtitle">{selectedRecipe.description}</p>
               </div>
               
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 <div>
                   <h3 className="title mb-2">Ingredients</h3>
                   <ul className="space-y-2">
