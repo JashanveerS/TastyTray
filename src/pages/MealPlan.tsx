@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Users, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { mealPlanService } from '../data/services';
+import { RecipeSearchModal } from '../parts/RecipeSearchModal';
 import type { MealPlanItem } from '../data/models';
 
 interface MealPlanProps {
@@ -13,7 +14,9 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
   const [mealPlans, setMealPlans] = useState<MealPlanItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showRecipeSearchModal, setShowRecipeSearchModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack' | null>(null);
 
   const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'] as const;
 
@@ -61,8 +64,20 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
     return mealPlans.filter(plan => plan.date === dateStr && plan.meal_type === mealType);
   };
 
-  const handleAddMeal = (_date: Date, _mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack') => {
-    setShowAddModal(true);
+  const handleAddMeal = (date: Date, mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack') => {
+    setSelectedDate(date);
+    setSelectedMealType(mealType);
+    setShowRecipeSearchModal(true);
+  };
+
+  const handleMealAdded = () => {
+    loadMealPlans(); // Refresh the meal plans
+  };
+
+  const handleCloseRecipeSearchModal = () => {
+    setShowRecipeSearchModal(false);
+    setSelectedDate(null);
+    setSelectedMealType(null);
   };
 
   const handleRemoveMeal = async (mealPlanId: string) => {
@@ -223,31 +238,15 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
         </div>
       </div>
 
-      {/* Add Meal Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Add Meal</h3>
-            <p className="text-gray-600 mb-4">
-              This is a placeholder for adding meals. In a complete implementation, 
-              this would show a recipe selector or search interface.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="flex-1 bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Recipe Search Modal */}
+      {showRecipeSearchModal && selectedDate && selectedMealType && (
+        <RecipeSearchModal
+          isOpen={showRecipeSearchModal}
+          onClose={handleCloseRecipeSearchModal}
+          selectedDate={selectedDate}
+          selectedMealType={selectedMealType}
+          onMealAdded={handleMealAdded}
+        />
       )}
     </div>
   );

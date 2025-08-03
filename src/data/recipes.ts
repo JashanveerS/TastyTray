@@ -17,40 +17,56 @@ export const fetchRandomRecipes = async (count = 12, offset = 0): Promise<Recipe
         const spoonResponse = await axios.get(`${SPOON_URL}/random`, {
           params: {
             apiKey: SPOON_KEY,
-            number: count,
+            number: count * 2, // Fetch more to filter for high ratings
             includeNutrition: true,
           },
           timeout: 10000 // 10 second timeout
         });
         
         if (spoonResponse.data.recipes && spoonResponse.data.recipes.length > 0) {
+          const highRatedRecipes = [];
           for (const recipe of spoonResponse.data.recipes) {
-            recipes.push(transformSpoonRecipe(recipe));
+            const transformedRecipe = transformSpoonRecipe(recipe);
+            // Only include recipes with rating 4.0 or higher
+            if (transformedRecipe.rating && transformedRecipe.rating >= 4.0) {
+              highRatedRecipes.push(transformedRecipe);
+            }
           }
-          return recipes.slice(0, count);
+          if (highRatedRecipes.length >= count) {
+            return highRatedRecipes.slice(0, count);
+          }
+          recipes.push(...highRatedRecipes);
         }
       } catch (error) {
         // Spoonacular failed, fallback to MealDB
       }
     }
     
-    // Fallback to MealDB but with more calls for pagination
+    // Fallback to MealDB but with more calls for pagination and filtering
     try {
-      const maxParallel = Math.min(count, 8); // Allow up to 8 parallel calls for more variety
+      const maxAttempts = count * 3; // Try more recipes to find high-rated ones
+      const maxParallel = Math.min(maxAttempts, 12); // Allow up to 12 parallel calls
       const mealDbPromises = Array.from({ length: maxParallel }, () =>
         axios.get(`${MEAL_DB_URL}/random.php`, { timeout: 5000 })
       );
       
       const responses = await Promise.allSettled(mealDbPromises);
+      const highRatedRecipes = [];
       
       for (const response of responses) {
         if (response.status === 'fulfilled' && 
             response.value.data.meals && 
             response.value.data.meals[0]) {
           const meal = response.value.data.meals[0];
-          recipes.push(transformMealDbRecipe(meal));
+          const transformedRecipe = transformMealDbRecipe(meal);
+          // Only include recipes with rating 4.0 or higher
+          if (transformedRecipe.rating && transformedRecipe.rating >= 4.0) {
+            highRatedRecipes.push(transformedRecipe);
+          }
         }
       }
+      
+      recipes.push(...highRatedRecipes);
     } catch (error) {
       // MealDB failed
     }
