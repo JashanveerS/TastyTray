@@ -12,7 +12,6 @@ import { ShoppingList } from './ShoppingList';
 import type { Recipe, SearchOptions } from '../data/models';
 import { fetchRandomRecipes, searchRecipes } from '../data/recipes';
 import { useAuth } from '../context/AuthContext';
-import { shoppingListService } from '../data/services';
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -171,7 +170,7 @@ export default function Home() {
       case 'favorites':
         return <Favorites onAddToMealPlan={handleAddToMealPlan} />;
       case 'meal-plan':
-        return <MealPlan onGenerateShoppingList={handleGenerateShoppingList} onNavigateToRecipeSearch={handleNavigateToRecipeSearch} />;
+        return <MealPlan onNavigateToRecipeSearch={handleNavigateToRecipeSearch} />;
       case 'pantry':
         return <Pantry />;
       case 'shopping':
