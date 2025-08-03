@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Users, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { Plus, Trash2, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { mealPlanService } from '../data/services';
-import { RecipeSearchModal } from '../parts/RecipeSearchModal';
 import type { MealPlanItem } from '../data/models';
 
 interface MealPlanProps {
-  onGenerateShoppingList?: (startDate: string, endDate: string) => void;
+  onNavigateToRecipeSearch?: (date: string, mealType: string) => void;
 }
 
-export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) => {
+export const MealPlan: React.FC<MealPlanProps> = ({ onNavigateToRecipeSearch }) => {
   const { user } = useAuth();
   const [mealPlans, setMealPlans] = useState<MealPlanItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [showRecipeSearchModal, setShowRecipeSearchModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack' | null>(null);
 
   const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'] as const;
 
@@ -65,19 +61,10 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
   };
 
   const handleAddMeal = (date: Date, mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack') => {
-    setSelectedDate(date);
-    setSelectedMealType(mealType);
-    setShowRecipeSearchModal(true);
-  };
-
-  const handleMealAdded = () => {
-    loadMealPlans(); // Refresh the meal plans
-  };
-
-  const handleCloseRecipeSearchModal = () => {
-    setShowRecipeSearchModal(false);
-    setSelectedDate(null);
-    setSelectedMealType(null);
+    const dateStr = date.toISOString().split('T')[0];
+    if (onNavigateToRecipeSearch) {
+      onNavigateToRecipeSearch(dateStr, mealType);
+    }
   };
 
   const handleRemoveMeal = async (mealPlanId: string) => {
@@ -89,13 +76,6 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
     }
   };
 
-  const handleGenerateShoppingList = () => {
-    if (onGenerateShoppingList) {
-      const startDate = weekStart.toISOString().split('T')[0];
-      const endDate = weekEnd.toISOString().split('T')[0];
-      onGenerateShoppingList(startDate, endDate);
-    }
-  };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', { 
@@ -121,19 +101,8 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div>
         <h2 className="text-2xl font-bold text-gray-900">Meal Plan</h2>
-        <div className="flex items-center space-x-4">
-          {onGenerateShoppingList && (
-            <button
-              onClick={handleGenerateShoppingList}
-              className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-            >
-              <ShoppingCart size={18} />
-              <span>Generate Shopping List</span>
-            </button>
-          )}
-        </div>
       </div>
 
       {/* Week Navigation */}
@@ -238,16 +207,6 @@ export const MealPlan: React.FC<MealPlanProps> = ({ onGenerateShoppingList }) =>
         </div>
       </div>
 
-      {/* Recipe Search Modal */}
-      {showRecipeSearchModal && selectedDate && selectedMealType && (
-        <RecipeSearchModal
-          isOpen={showRecipeSearchModal}
-          onClose={handleCloseRecipeSearchModal}
-          selectedDate={selectedDate}
-          selectedMealType={selectedMealType}
-          onMealAdded={handleMealAdded}
-        />
-      )}
     </div>
   );
 };

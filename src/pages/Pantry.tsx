@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Plus, Trash2, Edit3, AlertTriangle, Search } from 'lucide-react';
+import { Package, Plus, Trash2, Edit3, AlertTriangle, Search, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { pantryService } from '../data/services';
+import { ManageItemsModal } from '../parts/ManageItemsModal';
 import type { PantryItem } from '../data/models';
 
 export const Pantry: React.FC = () => {
@@ -11,6 +12,7 @@ export const Pantry: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<PantryItem | null>(null);
+  const [showManageModal, setShowManageModal] = useState(false);
   const [formData, setFormData] = useState({
     ingredient_name: '',
     quantity: '',
@@ -143,13 +145,22 @@ export const Pantry: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">My Pantry</h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
-        >
-          <Plus size={18} />
-          <span>Add Item</span>
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setShowManageModal(true)}
+            className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <Settings size={18} />
+            <span>Manage Items</span>
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            <Plus size={18} />
+            <span>Add Item</span>
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -348,6 +359,12 @@ export const Pantry: React.FC = () => {
           </div>
         </div>
       )}
+      
+      {/* Manage Items Modal */}
+      <ManageItemsModal 
+        isOpen={showManageModal} 
+        onClose={() => setShowManageModal(false)} 
+      />
     </div>
   );
 };

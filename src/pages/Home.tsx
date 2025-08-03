@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChefHat, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import SearchBar from '../parts/SearchBar';
 import RecipeCard from '../parts/RecipeCard';
 import { Navigation } from '../parts/Navigation';
@@ -14,6 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import { shoppingListService } from '../data/services';
 
 export default function Home() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState('recipes');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,26 @@ export default function Home() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const [currentSearchOptions, setCurrentSearchOptions] = useState<SearchOptions | null>(null);
+  const [pendingMealPlanParams, setPendingMealPlanParams] = useState<{date: string, mealType: string} | null>(null);
 
   const { user, profile } = useAuth();
 
   useEffect(() => {
     loadRandomRecipes();
   }, []);
+
+  // Check for meal plan parameters from URL
+  useEffect(() => {
+    const date = searchParams.get('mealPlanDate');
+    const mealType = searchParams.get('mealPlanMealType');
+    
+    if (date && mealType && (mealType === 'breakfast' || mealType === 'lunch' || mealType === 'dinner' || mealType === 'snack')) {
+      setPendingMealPlanParams({ date, mealType });
+      setActiveSection('recipes'); // Make sure we're on the recipes section
+      // Clear the URL parameters
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   const loadRandomRecipes = async () => {
     setLoading(true);
@@ -143,13 +159,11 @@ export default function Home() {
     setActiveSection('meal-plan');
   };
 
-  const handleGenerateShoppingList = async (startDate: string, endDate: string) => {
-    try {
-      await shoppingListService.generateFromMealPlan(user!.id, startDate, endDate);
-      setActiveSection('shopping');
-    } catch (error) {
-      console.error('Error generating shopping list:', error);
-    }
+
+  const handleNavigateToRecipeSearch = (date: string, mealType: string) => {
+    // Set the pending meal plan parameters and switch to recipes section
+    setPendingMealPlanParams({ date, mealType });
+    setActiveSection('recipes');
   };
 
   const renderSection = () => {
@@ -157,7 +171,7 @@ export default function Home() {
       case 'favorites':
         return <Favorites onAddToMealPlan={handleAddToMealPlan} />;
       case 'meal-plan':
-        return <MealPlan onGenerateShoppingList={handleGenerateShoppingList} />;
+        return <MealPlan onGenerateShoppingList={handleGenerateShoppingList} onNavigateToRecipeSearch={handleNavigateToRecipeSearch} />;
       case 'pantry':
         return <Pantry />;
       case 'shopping':
@@ -376,9 +390,12 @@ export default function Home() {
           onClose={() => {
             setMealPlanModalOpen(false);
             setRecipeToAddToMealPlan(null);
+            setPendingMealPlanParams(null); // Clear pending params
           }}
           recipe={recipeToAddToMealPlan}
           onSuccess={handleMealPlanSuccess}
+          prefilledDate={pendingMealPlanParams?.date}
+          prefilledMealType={pendingMealPlanParams?.mealType as 'breakfast' | 'lunch' | 'dinner' | 'snack' | undefined}
         />
       )}
     </div>
